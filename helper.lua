@@ -49,6 +49,18 @@ function Words.freq(self, letter)
     return self.freqs[letter] or 0
 end
 
+-- Find the score of a given word.
+--
+function Words.score(self, word)
+    local score = 0
+
+    for i = 1, #word do
+        score = score + self.freqs[word:sub(i, i)]
+    end
+
+    return score
+end
+
 -------------------------------
 
 return {

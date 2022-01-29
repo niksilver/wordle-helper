@@ -24,6 +24,10 @@ function TestWords:testRescore()
     lu.assertEquals( words:freq('c'), 2 )
     lu.assertEquals( words:freq('d'), 0 )
     lu.assertEquals( words:freq('l'), 2 )
+
+    lu.assertEquals( words:score("alice"), 7)
+    lu.assertEquals( words:score("ali"), 4)
+    lu.assertEquals( words:score("luc"), 5)
 end
 
 -------------------------------------------------------
