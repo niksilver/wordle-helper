@@ -18,11 +18,7 @@ end
 -- Does the list of words contain the given word?
 --
 function Words.contains(self, word)
-    if self.words[word] == nil then
-        return false
-    else
-        return true
-    end
+    return (not(not self.words[word]))
 end
 
 -------------------------------
