@@ -9,11 +9,16 @@ function Words.new(array)
     local self = {}
     setmetatable(self, Words)
 
+    -- words is a mapping from word to... zero?!
+
     local words = {}
     for _, word in pairs(array) do
         words[word] = 0
     end
     self.words = words
+
+    -- freqs is a mapping from letter to its frequency
+
     self.freqs = {}
     return self
 end
@@ -26,13 +31,24 @@ end
 
 -- Manually rescore all the words. Calculates frequency of each letter
 -- and the total score of each word (ie the sum of its lstter frequencies).
+-- Note that a letter will only count once in a word.
 --
 function Words.rescore(self)
     local freqs = {}
 
     for word, _ in pairs(self.words) do
+
+        -- First collect the letters - once each
+        
+        local letters = {}
         for i = 1, #word do
             local letter = word:sub(i, i)
+            letters[letter] = true
+        end
+
+        -- Now increment the frequency scores
+
+        for letter, _ in pairs(letters) do
             local freq = self.freqs[letter]
             if freq == nil then
                 self.freqs[letter] = 1
@@ -49,13 +65,22 @@ function Words.freq(self, letter)
     return self.freqs[letter] or 0
 end
 
--- Find the score of a given word.
+-- Find the score of a given word. Each letter only counts once.
 --
 function Words.score(self, word)
+    -- First collect the letters
+
+    local letters = {}
+    for i = 1, #word do
+        letters[word:sub(i, i)] = true
+    end
+
+    -- Now add up the score
+
     local score = 0
 
-    for i = 1, #word do
-        score = score + self.freqs[word:sub(i, i)]
+    for letter, _ in pairs(letters) do
+        score = score + self.freqs[letter]
     end
 
     return score
@@ -120,6 +145,28 @@ function Words.eliminateGiven(self, guess, clue)
     end
 
     return Words.new(list)
+end
+
+-- Rescore the words and find the top scoring ones. Returns a list of the words
+-- and the score.
+--
+function Words.topWords(self)
+    self:rescore()
+
+    local score = 0
+    local words = {}
+
+    for word in pairs(self.words) do
+        local word_score = self:score(word)
+        if word_score > score then
+            score = word_score
+            words = { word }
+        elseif word_score == score then
+            table.insert(words, word)
+        end
+    end
+
+    return words, score
 end
 
 -------------------------------

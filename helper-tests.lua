@@ -17,17 +17,23 @@ function TestWords:testNew()
 end
 
 function TestWords:testRescore()
-    local words = Words.new({ "alice", "lucky" })
+    local words = Words.new({ "alice", "lucky", "ally" })
     words:rescore()
 
-    lu.assertEquals( words:freq('a'), 1 )
+    lu.assertEquals( words:freq('a'), 2 )
     lu.assertEquals( words:freq('c'), 2 )
     lu.assertEquals( words:freq('d'), 0 )
-    lu.assertEquals( words:freq('l'), 2 )
+    lu.assertEquals( words:freq('y'), 2 )
 
-    lu.assertEquals( words:score("alice"), 7)
-    lu.assertEquals( words:score("ali"), 4)
-    lu.assertEquals( words:score("luc"), 5)
+    -- But a letter shouldn't count twice if it's repeated
+    lu.assertEquals( words:freq('l'), 3 )
+
+    lu.assertEquals( words:score("alice"), 9)
+    lu.assertEquals( words:score("ali"), 6)
+    lu.assertEquals( words:score("luc"), 6)
+
+    -- A word shouldn't score each letter only once
+    lu.assertEquals( words:score("ally"), 7)
 end
 
 function TestWords:testKeepGiven()
@@ -100,6 +106,50 @@ function TestWords:testEliminateGiven()
     lu.assertEquals( words2:contains("group"), false )
     lu.assertEquals( words2:contains("rapid"), false )
     lu.assertEquals( words2:contains("spurn"), true )
+end
+
+function TestWords:testTopWords()
+    local words = Words.new({
+        "house",
+        "lilly",
+        "round",
+        "group",
+        "rapid",
+        "spurn"
+    })
+
+    -- Frequencies are:
+    -- h: 1
+    -- o: 3
+    -- u: 4
+    -- s: 2
+    -- e: 1
+    -- l: 1
+    -- i: 2
+    -- y: 1
+    -- r: 4
+    -- n: 2
+    -- d: 2
+    -- g: 1
+    -- p: 3
+    -- a: 1
+    --
+    -- Therefore scores are:
+    -- house -> 1 3 4 2 1 -> 11
+    -- lilly -> 1 2 0 0 1 -> 4
+    -- round -> 4 3 4 2 2 -> 15
+    -- group -> 1 4 3 4 3 -> 15
+    -- rapid -> 4 1 3 2 2 -> 12
+    -- spurn -> 2 3 4 4 2 -> 15
+
+    local top_words, score = words:topWords()
+    table.sort(top_words)
+
+    lu.assertEquals( #top_words, 3)
+    lu.assertEquals( score, 15)
+    lu.assertEquals( top_words[1], "group" )
+    lu.assertEquals( top_words[2], "round" )
+    lu.assertEquals( top_words[3], "spurn" )
 end
 
 -------------------------------------------------------
