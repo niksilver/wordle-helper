@@ -74,6 +74,32 @@ function TestWords:testKeepGiven()
     -- Given one amber, one green
     lu.assertEquals( words.keepGiven("xyzdc", "abcde", "--ag-"), true)
 
+    -- Given a double letter, of which one is right
+    lu.assertEquals( words.keepGiven("peeps", "really", "-g---"), true)
+
+    -- This is a double letter, but should fail
+    lu.assertEquals( words.keepGiven("peeps", "really", "-a---"), false)
+end
+
+function TestWords:testEliminateGiven()
+    local words1 = Words.new({
+        "house",
+        "lilly",
+        "round",
+        "group",
+        "rapid",
+        "spurn"
+    })
+
+    -- Let's pretend the word is........ "spurn"
+    local words2 = words1:eliminateGiven("truly", "-ag--")
+
+    lu.assertEquals( words2:contains("house"), false )
+    lu.assertEquals( words2:contains("lilly"), false )
+    lu.assertEquals( words2:contains("round"), true )
+    lu.assertEquals( words2:contains("group"), false )
+    lu.assertEquals( words2:contains("rapid"), false )
+    lu.assertEquals( words2:contains("spurn"), true )
 end
 
 -------------------------------------------------------

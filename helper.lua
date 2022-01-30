@@ -108,6 +108,20 @@ function Words.keepGiven(subject, guess, clue)
     return true
 end
 
+-- Given a `guess` and a `clue` eliminate all impossible words.
+-- Returns a new instance of the class (with the reduced word list).
+--
+function Words.eliminateGiven(self, guess, clue)
+    local list = {}
+    for subject, _ in pairs(self.words) do
+        if Words.keepGiven(subject, guess, clue) then
+            table.insert(list, subject)
+        end
+    end
+
+    return Words.new(list)
+end
+
 -------------------------------
 
 return {
