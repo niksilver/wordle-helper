@@ -1,5 +1,7 @@
 -- Help us solve Wordle. Perhaps
 
+dict = require('dict')
+
 Words = {}
 Words.__index = Words
 
@@ -169,8 +171,35 @@ function Words.topWords(self)
     return words, score
 end
 
+-- Run the helper.
+--
+function Words.run()
+    local words = Words.new(dict)
+    local count = 1
+
+    while true do
+        io.write("\n" .. count .. " -------------\n")
+        io.write("Enter your guess: ")
+        local guess = io.read("*l")
+        io.write("Enter the clue..: ")
+        local clue = io.read("*l")
+
+        words = words:eliminateGiven(guess, clue)
+        top_words, score = words:topWords()
+
+        io.write("\n" .. #top_words .. " best option(s):\n")
+        for i = 1, #top_words do
+            if i > 10 then
+                io.write("...etc...\n")
+                break
+            end
+            io.write(top_words[i] .. "\n")
+        end
+
+        count = count + 1
+    end
+end
+
 -------------------------------
 
-return {
-    Words = Words
-}
+return Words

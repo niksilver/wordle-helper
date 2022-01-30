@@ -1,13 +1,11 @@
 -- Tests for the wordle helper
 
 lu = require('luaunit')
-helper = require('helper')
+Words = require('helper')
 
 -------------------------------------------------------
 
 TestWords = {}
-
-Words = helper.Words
 
 function TestWords:testNew()
     local words = Words.new({ "alice", "bob" })
