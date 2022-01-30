@@ -61,6 +61,53 @@ function Words.score(self, word)
     return score
 end
 
+-- Should we keep `subject` given that word `guess` results in `clue`?
+-- The `clue` is a string of five characters:
+-- `-` means the letter doesn't appear;
+-- `a` means the letter appears, but not here (amber);
+-- `g` means the letter appears here (green).
+-- This is a class method, not an instance method.
+--
+function Words.keepGiven(subject, guess, clue)
+    for i = 1, #clue do
+        local light = clue:sub(i, i)
+        local letter = guess:sub(i, i)
+
+        -- If we have a green light, we'll reject the word if
+        -- corresponding letters in the subject and the guess
+        -- are different.
+        if light == "g" then
+            if subject:sub(i, i) ~= letter then
+                return false
+            end
+        end
+
+        -- If we have an amber light we'll reject the word if
+        -- the corresponding letters match, or if there's no
+        -- such letter elsewhere in the subject.
+        if light == "a" then
+            if subject:sub(i, i) == letter then
+                return false
+            else
+                local rest = subject:sub(1, i-1) .. subject:sub(i+1, #subject)
+                if rest:find(letter) == nil then
+                    return false
+                end
+            end
+        end
+
+        -- If we have a blank light we'll reject the word if that
+        -- letter appears somewhere in the subject.
+        if light == "-" then
+            if subject:find(letter) ~= nil then
+                return false
+            end
+        end
+    end
+
+    return true
+end
+
 -------------------------------
 
 return {
