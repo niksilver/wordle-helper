@@ -3,17 +3,17 @@
 Words = {}
 Words.__index = Words
 
--- Define a new list of words, given as an array.
+-- Define a new list of possible words, given as an array.
 --
 function Words.new(array)
     local self = {}
     setmetatable(self, Words)
 
-    -- words is a mapping from word to... zero?!
+    -- words is just a mapping from word to true
 
     local words = {}
     for _, word in pairs(array) do
-        words[word] = 0
+        words[word] = true
     end
     self.words = words
 
