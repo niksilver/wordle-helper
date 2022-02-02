@@ -1,7 +1,7 @@
 -- Tests for the wordle helper
 
 lu = require('luaunit')
-Words = require('helper')
+Words = require('words')
 
 -------------------------------------------------------
 
