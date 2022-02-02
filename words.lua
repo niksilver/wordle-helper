@@ -178,13 +178,8 @@ function Words.run()
     local count = 1
 
     while true do
-        io.write("\n" .. count .. " -------------\n")
-        io.write("Enter your guess: ")
-        local guess = io.read("*l")
-        io.write("Enter the clue..: ")
-        local clue = io.read("*l")
+        -- Display the best words to choose
 
-        words = words:eliminateGiven(guess, clue)
         top_words, score = words:topWords()
 
         io.write("\n" .. #top_words .. " best option(s):\n")
@@ -195,6 +190,16 @@ function Words.run()
             end
             io.write(top_words[i] .. "\n")
         end
+
+        -- Get feedback and recalculate options
+
+        io.write("\n" .. count .. " -------------\n")
+        io.write("Enter your guess: ")
+        local guess = io.read("*l")
+        io.write("Enter the clue..: ")
+        local clue = io.read("*l")
+
+        words = words:eliminateGiven(guess, clue)
 
         count = count + 1
     end
