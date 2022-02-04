@@ -171,6 +171,35 @@ function Words.topWords(self)
     return words, score
 end
 
+-- Rescore the words and map each score to the list of words with that score.
+-- Returns the map, the top score, and the second-top score.
+--
+function Words.topScores(self)
+    self:rescore()
+
+    local top_score = 0
+    local second_score = -1
+    local scores = {}
+
+    for word in pairs(self.words) do
+        local word_score = self:score(word)
+        local equal_words = scores[word_score] or {}
+
+        table.insert(equal_words, word)
+        scores[word_score] = equal_words
+
+        if word_score > top_score then
+            top_score, second_score = word_score, top_score
+        elseif word_score == top_score then
+            -- Do nothing
+        elseif word_score > second_score then
+            second_score = word_score
+        end
+    end
+
+    return scores, top_score, second_score
+end
+
 -- Run the helper.
 --
 function Words.run()
@@ -182,7 +211,7 @@ function Words.run()
 
         -- Display the best words to choose
 
-        top_words, score = words:topWords()
+        top_words, top_score, second_score = words:topWords()
 
         io.write("\n    " .. #top_words .. " best option(s):\n")
         for i = 1, #top_words do

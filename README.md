@@ -24,5 +24,5 @@ Run the application. Use `g` for green, `a` for amber/yellow and `-` for nothing
 
 Run the tests with
 ```lua
-lua words-tests.lua -v
+lua words-test.lua -v
 ```

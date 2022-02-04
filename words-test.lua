@@ -150,6 +150,57 @@ function TestWords:testTopWords()
     lu.assertEquals( top_words[3], "spurn" )
 end
 
+function TestWords:testTopScores()
+    local words = Words.new({
+        "house",
+        "lilly",
+        "round",
+        "group",
+        "rapid",
+        "spurn"
+    })
+
+    -- Frequencies are:
+    -- h: 1
+    -- o: 3
+    -- u: 4
+    -- s: 2
+    -- e: 1
+    -- l: 1
+    -- i: 2
+    -- y: 1
+    -- r: 4
+    -- n: 2
+    -- d: 2
+    -- g: 1
+    -- p: 3
+    -- a: 1
+    --
+    -- Therefore scores are:
+    -- house -> 1 3 4 2 1 -> 11
+    -- lilly -> 1 2 0 0 1 -> 4
+    -- round -> 4 3 4 2 2 -> 15
+    -- group -> 1 4 3 4 3 -> 15
+    -- rapid -> 4 1 3 2 2 -> 12
+    -- spurn -> 2 3 4 4 2 -> 15
+
+    local scores, top_score, second_score = words:topScores()
+
+    lu.assertItemsEquals(scores[4], { "lilly" })
+    lu.assertItemsEquals(scores[11], { "house" })
+    lu.assertItemsEquals(scores[12], { "rapid" })
+    lu.assertItemsEquals(scores[15], { "group", "round", "spurn" })
+
+    lu.assertEquals(top_score, 15)
+    lu.assertEquals(second_score, 12)
+
+    -- And some values that shouldn't be there
+
+    lu.assertItemsEquals(scores[0], nil)
+    lu.assertItemsEquals(scores[1], nil)
+    lu.assertItemsEquals(scores[-1], nil)
+end
+
 -------------------------------------------------------
 
 os.exit( lu.LuaUnit.run() )
