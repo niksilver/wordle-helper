@@ -106,50 +106,6 @@ function TestWords:testEliminateGiven()
     lu.assertEquals( words2:contains("spurn"), true )
 end
 
-function TestWords:testTopWords()
-    local words = Words.new({
-        "house",
-        "lilly",
-        "round",
-        "group",
-        "rapid",
-        "spurn"
-    })
-
-    -- Frequencies are:
-    -- h: 1
-    -- o: 3
-    -- u: 4
-    -- s: 2
-    -- e: 1
-    -- l: 1
-    -- i: 2
-    -- y: 1
-    -- r: 4
-    -- n: 2
-    -- d: 2
-    -- g: 1
-    -- p: 3
-    -- a: 1
-    --
-    -- Therefore scores are:
-    -- house -> 1 3 4 2 1 -> 11
-    -- lilly -> 1 2 0 0 1 -> 4
-    -- round -> 4 3 4 2 2 -> 15
-    -- group -> 1 4 3 4 3 -> 15
-    -- rapid -> 4 1 3 2 2 -> 12
-    -- spurn -> 2 3 4 4 2 -> 15
-
-    local top_words, score = words:topWords()
-    table.sort(top_words)
-
-    lu.assertEquals( #top_words, 3)
-    lu.assertEquals( score, 15)
-    lu.assertEquals( top_words[1], "group" )
-    lu.assertEquals( top_words[2], "round" )
-    lu.assertEquals( top_words[3], "spurn" )
-end
-
 function TestWords:testTopScores()
     local words = Words.new({
         "house",
@@ -200,6 +156,27 @@ function TestWords:testTopScores()
     lu.assertItemsEquals(scores[1], nil)
     lu.assertItemsEquals(scores[-1], nil)
 end
+
+function TestWords:testTopScoresWithNoSecondScore()
+    local words = Words.new({
+        "house",
+    })
+
+    local scores, top_score, second_score = words:topScores()
+
+    lu.assertEquals(top_score, 5)
+    lu.assertEquals(second_score, 0)
+end
+
+function TestWords:testTopScoresWithNoTopScore()
+    local words = Words.new({
+    })
+
+    local scores, top_score, second_score = words:topScores()
+
+    lu.assertEquals(top_score, 0)
+end
+
 
 -------------------------------------------------------
 
