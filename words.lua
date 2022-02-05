@@ -149,17 +149,20 @@ function Words.eliminateGiven(self, guess, clue)
     return Words.new(list)
 end
 
--- Rescore the words and map each score to the list of words with that score.
--- Returns the map, the top score, and the second-top score.
--- If there are no top scoring words, or no second-top scoring words, that score
--- will be zero.
+-- Rescore the words and return: the top score, a list of the words with that score,
+-- the second-top score, a list of the words with that score.
+-- If there is no top or second-top scoring words that score will be zero and the
+-- list will be an empty list.
 --
-function Words.topScores(self)
+function Words.topWords(self)
     self:rescore()
 
     local top_score = 0
-    local second_score = -1
+    local second_score = 0
     local scores = {}
+
+    -- Create a map from score to words with that score,
+    -- and track the top and second-top scores.
 
     for word in pairs(self.words) do
         local word_score = self:score(word)
@@ -177,7 +180,19 @@ function Words.topScores(self)
         end
     end
 
-    return scores, top_score, second_score
+    -- Now we have that map, return the top and second-top scores and words.
+
+    local top_words = {}
+    if top_score > 0 then
+        top_words = scores[top_score]
+    end
+
+    local second_words = {}
+    if second_score > 0 then
+        second_words = scores[second_score]
+    end
+
+    return top_score, top_words, second_score, second_words
 end
 
 -- Run the helper.

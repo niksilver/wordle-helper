@@ -106,7 +106,7 @@ function TestWords:testEliminateGiven()
     lu.assertEquals( words2:contains("spurn"), true )
 end
 
-function TestWords:testTopScores()
+function TestWords:testTopWords()
     local words = Words.new({
         "house",
         "lilly",
@@ -140,41 +140,37 @@ function TestWords:testTopScores()
     -- rapid -> 4 1 3 2 2 -> 12
     -- spurn -> 2 3 4 4 2 -> 15
 
-    local scores, top_score, second_score = words:topScores()
-
-    lu.assertItemsEquals(scores[4], { "lilly" })
-    lu.assertItemsEquals(scores[11], { "house" })
-    lu.assertItemsEquals(scores[12], { "rapid" })
-    lu.assertItemsEquals(scores[15], { "group", "round", "spurn" })
+    local top_score, top_words, second_score, second_words = words:topWords()
 
     lu.assertEquals(top_score, 15)
+    lu.assertItemsEquals(top_words, { "group", "round", "spurn" })
     lu.assertEquals(second_score, 12)
-
-    -- And some values that shouldn't be there
-
-    lu.assertItemsEquals(scores[0], nil)
-    lu.assertItemsEquals(scores[1], nil)
-    lu.assertItemsEquals(scores[-1], nil)
+    lu.assertItemsEquals(second_words, { "rapid" })
 end
 
-function TestWords:testTopScoresWithNoSecondScore()
+function TestWords:testTopWordsWithNoSecondScore()
     local words = Words.new({
         "house",
     })
 
-    local scores, top_score, second_score = words:topScores()
+    local top_score, top_words, second_score, second_words = words:topWords()
 
     lu.assertEquals(top_score, 5)
+    lu.assertItemsEquals(top_words, { "house" })
     lu.assertEquals(second_score, 0)
+    lu.assertItemsEquals(second_words, {})
 end
 
-function TestWords:testTopScoresWithNoTopScore()
+function TestWords:testTopWordsWithNoTopScore()
     local words = Words.new({
     })
 
-    local scores, top_score, second_score = words:topScores()
+    local top_score, top_words, second_score, second_words = words:topWords()
 
     lu.assertEquals(top_score, 0)
+    lu.assertItemsEquals(top_words, {})
+    lu.assertEquals(second_score, 0)
+    lu.assertItemsEquals(second_words, {})
 end
 
 
