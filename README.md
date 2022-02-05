@@ -4,22 +4,34 @@ Another experiment with Lua: suggest the best words for each turn of Wordle.
 
 Run the application. Use `g` for green, `a` for amber/yellow and `-` for nothing.
 ```
-% lua -e "require('words').run()"
+$ lua -e "require('words').run()"
+
 1 -------------
 
-    1 best option(s):
-    arose
+    Recommended:
+        arose
+    Also:
+        raise
+        arise
+        aries
+        aires
 
-    Enter your guess: float
-    Enter the clue..: -ag--
+    Enter your guess: arose
+    Enter the clue..: -aa-g
 
 2 -------------
 
-    2 best option(s):
-    scowl
-    spoil
+    Recommended:
+        rogue
+        rouge
+        norge
+    Also:
+        route
+        notre
+        forge
 
-    Enter your guess:
+    Enter your guess: route
+    Enter the clue..:
 ```
 
 Run the tests with
