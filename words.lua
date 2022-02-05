@@ -204,50 +204,25 @@ function Words.run()
     while true do
         io.write("\n" .. count .. " -------------\n")
 
-        -- Print the recommended words from top two categories, but no
-        -- more than six words total.
-        -- We'll iterate through the list of top words (i = 1, i = 2, etc)
-        -- then swap to the list of second-top words, and offset our
-        -- incrementing counter to make sure we index that list correctly.
+        -- Print the recommended words from top two categories
 
-        local scores, top_score, second_score = words:topScores()
-        local top_words = scores[top_score]
-        local offset = 0
+        local top_score, top_words, second_score, second_words = words:topWords()
 
-        if top_score == 0 then
-            io.write("No words to suggest!\n")
+        if top_score > 0 then
+            io.write("\n    Recommended:\n")
+            for i = 1, #top_words do
+                io.write("        " .. top_words[i] .. "\n")
+            end
+        else
+            io.write("\nNo words to suggest!\n")
             return
         end
 
-        local second_words = scores[second_score]
-        local num_second_words = 0
         if second_score > 0 then
-            num_second_words = #second_words
-        end
-
-        io.write("\n    Recommended:\n")
-        for i = 1, (#top_words + num_second_words) do
-
-            -- Switch over if we're beyond our top words
-            -- (but make sure there is a second list)
-
-            if i > #top_words and offset == 0 then
-                if num_second_words == 0 then
-                    break
-                end
-
-                offset = #top_words
-                top_words = second_words
-                io.write("    Also:\n")
+            io.write("    Also:\n")
+            for i = 1, #second_words do
+                io.write("        " .. second_words[i] .. "\n")
             end
-
-            if i > 6 then
-                io.write("        ...and more...\n")
-                break
-            end
-
-            local word = top_words[i - offset]
-            io.write("        " .. word .. "\n")
         end
 
         -- Get feedback and recalculate options
