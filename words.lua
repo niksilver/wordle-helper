@@ -27,7 +27,7 @@ end
 
 -- Does the list of words contain the given word?
 --
-function Words.contains(self, word)
+function Words:contains(word)
     return (not(not self.words[word]))
 end
 
@@ -35,7 +35,7 @@ end
 -- and the total score of each word (ie the sum of its lstter frequencies).
 -- Note that a letter will only count once in a word.
 --
-function Words.rescore(self)
+function Words:rescore()
     local freqs = {}
 
     for word, _ in pairs(self.words) do
@@ -69,7 +69,7 @@ end
 
 -- Find the score of a given word. Each letter only counts once.
 --
-function Words.score(self, word)
+function Words:score(word)
     -- First collect the letters
 
     local letters = {}
@@ -138,7 +138,7 @@ end
 -- Given a `guess` and a `clue` eliminate all impossible words.
 -- Returns a new instance of the class (with the reduced word list).
 --
-function Words.eliminateGiven(self, guess, clue)
+function Words:eliminateGiven(guess, clue)
     local list = {}
     for subject, _ in pairs(self.words) do
         if Words.keepGiven(subject, guess, clue) then
@@ -154,7 +154,7 @@ end
 -- If there is no top or second-top scoring words that score will be zero and the
 -- list will be an empty list.
 --
-function Words.topWords(self)
+function Words:topWords()
     self:rescore()
 
     local top_score = 0
