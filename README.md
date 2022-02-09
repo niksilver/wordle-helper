@@ -39,7 +39,7 @@ Run all the tests with
 lua all-test.lua -v
 ```
 
-Test the effectiveness of the strategy this, to run it 100 times
+Test the effectiveness of the strategy like this, to run it 100 times
 and plot the results.
 ```
 lua -e "require('evaluator').runAndPlot(100)"
