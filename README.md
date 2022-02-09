@@ -36,5 +36,5 @@ $ lua -e "require('words').run()"
 
 Run the tests with
 ```lua
-lua words-test.lua -v
+lua all-test.lua -v
 ```

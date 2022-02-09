@@ -1,6 +1,7 @@
 -- Evaluate our guessing strategy.
 
-Words = require('words')
+local Words = require('words')
+local dict = require('dict')
 
 Evaluator = {}
 Evaluator.__index = Evaluator
@@ -28,6 +29,26 @@ function Evaluator.clue(answer, guess)
     end
 
     return clue
+end
+
+-- Run the evaluator once against a random work, and return the number of tries.
+--
+function Evaluator.runOnce()
+    local words = Words.new(dict)
+    local answer = dict[math.random(#dict)]
+    local goes = 0
+    local clue = "-----"
+
+    while clue ~= "ggggg" do
+        local guess = words:bestWord()
+        clue = Evaluator.clue(answer, guess)
+        goes = goes + 1
+        if clue ~= "ggggg" then
+            words = words:eliminateGiven(guess, clue)
+        end
+    end
+
+    return goes
 end
 
 -------------------------------

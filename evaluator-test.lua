@@ -44,4 +44,4 @@ end
 
 -------------------------------------------------------
 
-os.exit( lu.LuaUnit.run() )
+return lu.LuaUnit.run()

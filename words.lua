@@ -1,8 +1,8 @@
 -- Help us solve Wordle. Perhaps
 
-dict = require('dict')
+local dict = require('dict')
 
-Words = {}
+local Words = {}
 Words.__index = Words
 
 -- Define a new list of possible words, given as an array.
@@ -193,6 +193,18 @@ function Words:topWords()
     end
 
     return top_score, top_words, second_score, second_words
+end
+
+-- Pick the best word, or nil, given the `words` so far.
+--
+function bestWord(words)
+    local top_score, top_words, second_score, second_words = words:topWords()
+
+    if top_score == 0 then
+        return nil
+    else
+        return top_words[1]
+    end
 end
 
 -- Run the helper.
