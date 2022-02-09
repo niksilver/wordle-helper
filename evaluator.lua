@@ -51,6 +51,59 @@ function Evaluator.runOnce()
     return goes
 end
 
+-- Run the evaluator `runs` many times and return a map of goes.
+--
+function Evaluator.runMany(runs)
+    math.randomseed(os.time())
+
+    local stats = {}
+
+    for i = 1, runs do
+        local goes = Evaluator.runOnce()
+        if stats[goes] == nil then
+            stats[goes] = 1
+        else
+            stats[goes] = stats[goes] + 1
+        end
+    end
+
+    return stats
+end
+
+-- Run the evaluator `runs` many times and plot the results
+--
+function Evaluator.runAndPlot(runs)
+    local stats = Evaluator.runMany(runs)
+
+    -- Calculate the data for the bar chart
+
+    local max_goes = 0
+    local max_bar = 0
+    local total_goes = 0
+
+    for goes, count in pairs(stats) do
+        max_goes = math.max(goes, max_goes)
+        max_bar = math.max(count, max_bar)
+        total_goes = total_goes + goes * count
+    end
+
+    -- Output the bar chart, scaling it to 40 characters
+
+    local scale = 40 / max_bar
+
+    for i = 1, max_goes do
+        stats[i] = stats[i] or 0
+        local num = string.format('%4d', i)
+        local bar_size = math.ceil(stats[i] * scale)
+        local bar = string.rep("=", bar_size)
+        io.write(num .. " " .. bar .. "\n")
+    end
+
+    local average = total_goes / runs
+    io.write("\nAverage " .. average .. "\n")
+
+end
+
 -------------------------------
 
 return Evaluator

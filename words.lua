@@ -197,8 +197,8 @@ end
 
 -- Pick the best word, or nil, given the `words` so far.
 --
-function bestWord(words)
-    local top_score, top_words, second_score, second_words = words:topWords()
+function Words:bestWord()
+    local top_score, top_words, second_score, second_words = self:topWords()
 
     if top_score == 0 then
         return nil
