@@ -35,12 +35,12 @@ $ lua -e "require('words').run()"
 ```
 
 Run all the tests with
-```lua
+```
 lua all-test.lua -v
 ```
 
 Test the effectiveness of the strategy this, to run it 100 times
 and plot the results.
-```lua
+```
 lua -e "require('evaluator').runAndPlot(100)"
 ```
