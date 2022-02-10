@@ -149,20 +149,20 @@ function Words:eliminateGiven(guess, clue)
     return Words.new(list)
 end
 
--- Rescore the words and return: a list of the words with the top score,
--- a list of the words with the second-top score.
--- If there is no top or second-top scoring words the relevant lists
+-- Rescore the words and return: a list of the words with the best score,
+-- a list of the words with the second-best score.
+-- If there is no best or second-best scoring words the relevant lists
 -- will be empty.
 --
-function Words:topWords()
+function Words:bestWords()
     self:rescore()
 
-    local top_score = 0
+    local best_score = 0
     local second_score = 0
     local scores = {}
 
     -- Create a map from score to words with that score,
-    -- and track the top and second-top scores.
+    -- and track the best and second-best scores.
 
     for word in pairs(self.words) do
         local word_score = self:score(word)
@@ -171,20 +171,20 @@ function Words:topWords()
         table.insert(equal_words, word)
         scores[word_score] = equal_words
 
-        if word_score > top_score then
-            top_score, second_score = word_score, top_score
-        elseif word_score == top_score then
+        if word_score > best_score then
+            best_score, second_score = word_score, best_score
+        elseif word_score == best_score then
             -- Do nothing
         elseif word_score > second_score then
             second_score = word_score
         end
     end
 
-    -- Now we have that map, return the top and second-top scores and words.
+    -- Now we have that map, return the best and second-best scores and words.
 
-    local top_words = {}
-    if top_score > 0 then
-        top_words = scores[top_score]
+    local best_words = {}
+    if best_score > 0 then
+        best_words = scores[best_score]
     end
 
     local second_words = {}
@@ -192,18 +192,62 @@ function Words:topWords()
         second_words = scores[second_score]
     end
 
-    return top_words, second_words
+    return best_words, second_words
 end
 
--- Pick the best word, or nil, given the `words` so far.
+-- Like `bestWords`, but selects the lowest scoring and second-lowest
+-- scoring words.
+--
+function Words:lowestScoringWords()
+    self:rescore()
+
+    local lowest_score = nil
+    local second_score = nil
+    local scores = {}
+
+    -- Create a map from score to words with that score,
+    -- and track the lowest and second-lowest scores.
+
+    for word in pairs(self.words) do
+        local word_score = self:score(word)
+        local equal_words = scores[word_score] or {}
+
+        table.insert(equal_words, word)
+        scores[word_score] = equal_words
+
+        if lowest_score == nil or word_score < lowest_score then
+            lowest_score, second_score = word_score, lowest_score
+        elseif word_score == lowest_score then
+            -- Do nothing
+        elseif second_score ~= nil and word_score < second_score then
+            second_score = word_score
+        end
+    end
+
+    -- Now we have that map, return the lowest and second-lowest scores and words.
+
+    local lowest_words = {}
+    if lowest_score ~= nil then
+        lowest_words = scores[lowest_score]
+    end
+
+    local second_words = {}
+    if second_score ~= nil then
+        second_words = scores[second_score]
+    end
+
+    return lowest_words, second_words
+end
+
+-- Pick the best word, or nil if there is none.
 --
 function Words:bestWord()
-    local top_words, second_words = self:topWords()
+    local best_words, second_words = self:bestWords()
 
-    if #top_words == nil then
+    if #best_words == nil then
         return nil
     else
-        return top_words[1]
+        return best_words[1]
     end
 end
 
@@ -216,14 +260,14 @@ function Words.run()
     while true do
         io.write("\n" .. count .. " -------------\n")
 
-        -- Print the recommended words from top two categories
+        -- Print the recommended words from best two categories
 
-        local top_words, second_words = words:topWords()
+        local best_words, second_words = words:bestWords()
 
-        if #top_words > 0 then
+        if #best_words > 0 then
             io.write("\n    Recommended:\n")
-            for i = 1, #top_words do
-                io.write("        " .. top_words[i] .. "\n")
+            for i = 1, #best_words do
+                io.write("        " .. best_words[i] .. "\n")
             end
         else
             io.write("\nNo words to suggest!\n")

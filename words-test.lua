@@ -106,7 +106,7 @@ function TestWords:testEliminateGiven()
     lu.assertEquals( words2:contains("spurn"), true )
 end
 
-function TestWords:testTopWords()
+function TestWords:testBestWords()
     local words = Words.new({
         "house",
         "lilly",
@@ -140,33 +140,97 @@ function TestWords:testTopWords()
     -- rapid -> 4 1 3 2 2 -> 12
     -- spurn -> 2 3 4 4 2 -> 15
 
-    local top_words, second_words = words:topWords()
+    local best_words, second_words = words:bestWords()
 
-    lu.assertItemsEquals(top_words, { "group", "round", "spurn" })
+    lu.assertItemsEquals(best_words, { "group", "round", "spurn" })
     lu.assertEquals(words:score("group"), 15)
     lu.assertItemsEquals(second_words, { "rapid" })
     lu.assertEquals(words:score("rapid"), 12)
 end
 
-function TestWords:testTopWordsWithNoSecondScore()
+function TestWords:testBestWordsWithNoSecondScore()
     local words = Words.new({
         "house",
     })
 
-    local top_words, second_words = words:topWords()
+    local best_words, second_words = words:bestWords()
 
-    lu.assertItemsEquals(top_words, { "house" })
+    lu.assertItemsEquals(best_words, { "house" })
     lu.assertEquals(words:score("house"), 5)
     lu.assertItemsEquals(second_words, {})
 end
 
-function TestWords:testTopWordsWithNoTopScore()
+function TestWords:testBestWordsWithNoBestScore()
     local words = Words.new({
     })
 
-    local top_words, second_words = words:topWords()
+    local best_words, second_words = words:bestWords()
 
-    lu.assertItemsEquals(top_words, {})
+    lu.assertItemsEquals(best_words, {})
+    lu.assertItemsEquals(second_words, {})
+end
+
+function TestWords:testLowestScoringWords()
+    local words = Words.new({
+        "house",
+        "lilly",
+        "round",
+        "group",
+        "rapid",
+        "spurn"
+    })
+
+    -- Frequencies are:
+    -- h: 1
+    -- o: 3
+    -- u: 4
+    -- s: 2
+    -- e: 1
+    -- l: 1
+    -- i: 2
+    -- y: 1
+    -- r: 4
+    -- n: 2
+    -- d: 2
+    -- g: 1
+    -- p: 3
+    -- a: 1
+    --
+    -- Therefore scores are:
+    -- house -> 1 3 4 2 1 -> 11
+    -- lilly -> 1 2 0 0 1 -> 4
+    -- round -> 4 3 4 2 2 -> 15
+    -- group -> 1 4 3 4 3 -> 15
+    -- rapid -> 4 1 3 2 2 -> 12
+    -- spurn -> 2 3 4 4 2 -> 15
+
+    local lowest_words, second_words = words:lowestScoringWords()
+
+    lu.assertItemsEquals(lowest_words, { "lilly" })
+    lu.assertEquals(words:score("lilly"), 4)
+    lu.assertItemsEquals(second_words, { "house" })
+    lu.assertEquals(words:score("house"), 11)
+end
+
+function TestWords:testLowestScoringWordsWithNoSecondScore()
+    local words = Words.new({
+        "house",
+    })
+
+    local lowest_words, second_words = words:lowestScoringWords()
+
+    lu.assertItemsEquals(lowest_words, { "house" })
+    lu.assertEquals(words:score("house"), 5)
+    lu.assertItemsEquals(second_words, {})
+end
+
+function TestWords:testLowestScoringWordsWithNoBestScore()
+    local words = Words.new({
+    })
+
+    local lowest_words, second_words = words:lowestScoringWords()
+
+    lu.assertItemsEquals(lowest_words, {})
     lu.assertItemsEquals(second_words, {})
 end
 
