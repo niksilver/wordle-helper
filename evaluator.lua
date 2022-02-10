@@ -32,9 +32,11 @@ function Evaluator.clue(answer, guess)
 end
 
 -- Run the evaluator once against a random work, and return the number of tries.
+-- The default scoring function is `Words:highestScoringWords()`, but this can
+-- be changed by setting the optional `scoring_fn`.
 --
-function Evaluator.runOnce()
-    local words = Words.new(dict)
+function Evaluator.runOnce(scoring_fn)
+    local words = Words.new(dict, scoring_fn)
     local answer = dict[math.random(#dict)]
     local goes = 0
     local clue = "-----"
@@ -52,14 +54,15 @@ function Evaluator.runOnce()
 end
 
 -- Run the evaluator `runs` many times and return a map of goes.
+-- The optional `scoring_fn` selects the non-default scoring function.
 --
-function Evaluator.runMany(runs)
+function Evaluator.runMany(runs, scoring_fn)
     math.randomseed(os.time())
 
     local stats = {}
 
     for i = 1, runs do
-        local goes = Evaluator.runOnce()
+        local goes = Evaluator.runOnce(scoring_fn)
         if stats[goes] == nil then
             stats[goes] = 1
         else
@@ -70,10 +73,11 @@ function Evaluator.runMany(runs)
     return stats
 end
 
--- Run the evaluator `runs` many times and plot the results
+-- Run the evaluator `runs` many times and plot the results.
+-- The optional `scoring_fn` selects the non-default scoring function.
 --
-function Evaluator.runAndPlot(runs)
-    local stats = Evaluator.runMany(runs)
+function Evaluator.runAndPlot(runs, scoring_fn)
+    local stats = Evaluator.runMany(runs, scoring_fn)
 
     -- Calculate the data for the bar chart
 

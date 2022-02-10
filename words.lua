@@ -5,10 +5,14 @@ local dict = require('dict')
 local Words = {}
 Words.__index = Words
 
--- Define a new list of possible words, given as an array.
+-- Define a new list of possible words, given as an `array`.
+-- The default scoring function is `highestScoringWords()`, but this can
+-- be changed by setting the optional `scoring_fn`.
 --
-function Words.new(array)
+function Words.new(array, scoring_fn)
     local self = {}
+    self.bestWords = scoring_fn or Words.highestScoringWords
+
     setmetatable(self, Words)
 
     -- words is just a mapping from word to true
@@ -155,14 +159,23 @@ end
 -- will be empty.
 --
 function Words:bestWords()
+    return self:highestScoringWords()
+end
+
+-- Rescore the words and return: a list of the words with the highest score,
+-- and a list of the words with the second-highest score.
+-- If there is no highest or second-highest scoring words the relevant lists
+-- will be empty.
+--
+function Words:highestScoringWords()
     self:rescore()
 
-    local best_score = 0
+    local highest_score = 0
     local second_score = 0
     local scores = {}
 
     -- Create a map from score to words with that score,
-    -- and track the best and second-best scores.
+    -- and track the highest and second-highest scores.
 
     for word in pairs(self.words) do
         local word_score = self:score(word)
@@ -171,20 +184,20 @@ function Words:bestWords()
         table.insert(equal_words, word)
         scores[word_score] = equal_words
 
-        if word_score > best_score then
-            best_score, second_score = word_score, best_score
-        elseif word_score == best_score then
+        if word_score > highest_score then
+            highest_score, second_score = word_score, highest_score
+        elseif word_score == highest_score then
             -- Do nothing
         elseif word_score > second_score then
             second_score = word_score
         end
     end
 
-    -- Now we have that map, return the best and second-best scores and words.
+    -- Now we have that map, return the highest and second-highest scores and words.
 
-    local best_words = {}
-    if best_score > 0 then
-        best_words = scores[best_score]
+    local highest_words = {}
+    if highest_score > 0 then
+        highest_words = scores[highest_score]
     end
 
     local second_words = {}
@@ -192,10 +205,10 @@ function Words:bestWords()
         second_words = scores[second_score]
     end
 
-    return best_words, second_words
+    return highest_words, second_words
 end
 
--- Like `bestWords`, but selects the lowest scoring and second-lowest
+-- Like `highestScoringWords`, but selects the lowest scoring and second-lowest
 -- scoring words.
 --
 function Words:lowestScoringWords()
@@ -251,10 +264,11 @@ function Words:bestWord()
     end
 end
 
--- Run the helper.
+-- Run the helper. The default scoring function can be changed by setting the
+-- optional `scoring_fn`.
 --
-function Words.run()
-    local words = Words.new(dict)
+function Words.run(scoring_fn)
+    local words = Words.new(dict, scoring_fn)
     local count = 1
 
     while true do

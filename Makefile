@@ -6,3 +6,6 @@ run:
 
 evaluate:
 	lua -e "require('evaluator').runAndPlot(100)"
+
+evaluate-lowest-scoring:
+	lua -e "Words = require('words') ; require('evaluator').runAndPlot(100, Words.lowestScoringWords)"
