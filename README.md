@@ -34,6 +34,8 @@ $ lua -e "require('words').run()"
     Enter the clue..:
 ```
 
+## Other actions
+
 Run all the tests with
 ```
 lua all-test.lua -v
@@ -43,4 +45,11 @@ Test the effectiveness of the strategy like this, to run it 100 times
 and plot the results.
 ```
 lua -e "require('evaluator').runAndPlot(100)"
+```
+
+There's also a `Makefile`, so you can do:
+```
+$ make run
+$ make test
+$ make evaluator
 ```

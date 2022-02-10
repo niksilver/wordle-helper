@@ -149,10 +149,10 @@ function Words:eliminateGiven(guess, clue)
     return Words.new(list)
 end
 
--- Rescore the words and return: the top score, a list of the words with that score,
--- the second-top score, a list of the words with that score.
--- If there is no top or second-top scoring words that score will be zero and the
--- list will be an empty list.
+-- Rescore the words and return: a list of the words with the top score,
+-- a list of the words with the second-top score.
+-- If there is no top or second-top scoring words the relevant lists
+-- will be empty.
 --
 function Words:topWords()
     self:rescore()
@@ -192,15 +192,15 @@ function Words:topWords()
         second_words = scores[second_score]
     end
 
-    return top_score, top_words, second_score, second_words
+    return top_words, second_words
 end
 
 -- Pick the best word, or nil, given the `words` so far.
 --
 function Words:bestWord()
-    local top_score, top_words, second_score, second_words = self:topWords()
+    local top_words, second_words = self:topWords()
 
-    if top_score == 0 then
+    if #top_words == nil then
         return nil
     else
         return top_words[1]
@@ -218,9 +218,9 @@ function Words.run()
 
         -- Print the recommended words from top two categories
 
-        local top_score, top_words, second_score, second_words = words:topWords()
+        local top_words, second_words = words:topWords()
 
-        if top_score > 0 then
+        if #top_words > 0 then
             io.write("\n    Recommended:\n")
             for i = 1, #top_words do
                 io.write("        " .. top_words[i] .. "\n")
@@ -230,7 +230,7 @@ function Words.run()
             return
         end
 
-        if second_score > 0 then
+        if #second_words > 0 then
             io.write("    Also:\n")
             for i = 1, #second_words do
                 io.write("        " .. second_words[i] .. "\n")

@@ -140,12 +140,12 @@ function TestWords:testTopWords()
     -- rapid -> 4 1 3 2 2 -> 12
     -- spurn -> 2 3 4 4 2 -> 15
 
-    local top_score, top_words, second_score, second_words = words:topWords()
+    local top_words, second_words = words:topWords()
 
-    lu.assertEquals(top_score, 15)
     lu.assertItemsEquals(top_words, { "group", "round", "spurn" })
-    lu.assertEquals(second_score, 12)
+    lu.assertEquals(words:score("group"), 15)
     lu.assertItemsEquals(second_words, { "rapid" })
+    lu.assertEquals(words:score("rapid"), 12)
 end
 
 function TestWords:testTopWordsWithNoSecondScore()
@@ -153,11 +153,10 @@ function TestWords:testTopWordsWithNoSecondScore()
         "house",
     })
 
-    local top_score, top_words, second_score, second_words = words:topWords()
+    local top_words, second_words = words:topWords()
 
-    lu.assertEquals(top_score, 5)
     lu.assertItemsEquals(top_words, { "house" })
-    lu.assertEquals(second_score, 0)
+    lu.assertEquals(words:score("house"), 5)
     lu.assertItemsEquals(second_words, {})
 end
 
@@ -165,11 +164,9 @@ function TestWords:testTopWordsWithNoTopScore()
     local words = Words.new({
     })
 
-    local top_score, top_words, second_score, second_words = words:topWords()
+    local top_words, second_words = words:topWords()
 
-    lu.assertEquals(top_score, 0)
     lu.assertItemsEquals(top_words, {})
-    lu.assertEquals(second_score, 0)
     lu.assertItemsEquals(second_words, {})
 end
 
