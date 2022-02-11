@@ -232,7 +232,7 @@ function Words:lowestScoringWords()
             lowest_score, second_score = word_score, lowest_score
         elseif word_score == lowest_score then
             -- Do nothing
-        elseif second_score ~= nil and word_score < second_score then
+        elseif second_score == nil or word_score < second_score then
             second_score = word_score
         end
     end
@@ -250,6 +250,49 @@ function Words:lowestScoringWords()
     end
 
     return lowest_words, second_words
+end
+
+-- A scoring function to select the best and second best words randomly -
+-- three of each
+--
+function Words:randomWords()
+    -- We don't want to select words twice, so in order to eliminate selected
+    -- words from our list we need to start with a copy of our word list and
+    -- use that to choose and eliminate from.
+
+    local words = {}
+    for word, _ in pairs(self.words) do
+        table.insert(words, word)
+    end
+
+    -- Select up to 3 words for the first list to return, and up to 3 words
+    -- for the second list.
+
+    local first_list = {}
+
+    for i = 1, math.min(#words, 3) do
+        local index = math.random(#words)
+        if #words == 1 then
+            index = 1
+        end
+
+        table.insert(first_list, words[index])
+        table.remove(words, index)
+    end
+
+    local second_list = {}
+
+    for i = 1, math.min(#words, 3) do
+        local index = math.random(#words)
+        if #words == 1 then
+            index = 1
+        end
+
+        table.insert(second_list, words[index])
+        table.remove(words, index)
+    end
+
+    return first_list, second_list
 end
 
 -- Pick the best word, or nil if there is none.

@@ -234,7 +234,85 @@ function TestWords:testLowestScoringWordsWithNoBestScore()
     lu.assertItemsEquals(second_words, {})
 end
 
+function TestWords:testRandomWords()
+    -- We'll test with 6, 5, ... 1, 0 words
+ 
+    local words = Words.new({ "a", "b", "c", "d", "e", "f" })
+    local lowest_words, second_words = words:randomWords()
+    lu.assertEquals(#lowest_words, 3)
+    lu.assertEquals(#second_words, 3)
+    assertNotContains(lowest_words, second_words[1])
+    assertNotContains(lowest_words, second_words[2])
+    assertNotContains(lowest_words, second_words[3])
+    assertAllDifferent(lowest_words)
+    assertAllDifferent(second_words)
+ 
+    words = Words.new({ "a", "b", "c", "d", "e" })
+    lowest_words, second_words = words:randomWords()
+    lu.assertEquals(#lowest_words, 3)
+    lu.assertEquals(#second_words, 2)
+    assertNotContains(lowest_words, second_words[1])
+    assertNotContains(lowest_words, second_words[2])
+    assertAllDifferent(lowest_words)
+    assertAllDifferent(second_words)
+ 
+    words = Words.new({ "a", "b", "c", "d" })
+    lowest_words, second_words = words:randomWords()
+    lu.assertEquals(#lowest_words, 3)
+    lu.assertEquals(#second_words, 1)
+    assertNotContains(lowest_words, second_words[1])
+    assertAllDifferent(lowest_words)
+ 
+    words = Words.new({ "a", "b", "c" })
+    lowest_words, second_words = words:randomWords()
+    lu.assertEquals(#lowest_words, 3)
+    lu.assertEquals(#second_words, 0)
+    assertAllDifferent(lowest_words)
+ 
+    words = Words.new({ "a", "b" })
+    lowest_words, second_words = words:randomWords()
+    lu.assertEquals(#lowest_words, 2)
+    lu.assertEquals(#second_words, 0)
+    assertAllDifferent(lowest_words)
+ 
+    words = Words.new({ "a" })
+    lowest_words, second_words = words:randomWords()
+    lu.assertEquals(#lowest_words, 1)
+    lu.assertEquals(#second_words, 0)
+    assertAllDifferent(lowest_words)
+ 
+    words = Words.new({})
+    lowest_words, second_words = words:randomWords()
+    lu.assertEquals(#lowest_words, 0)
+    lu.assertEquals(#second_words, 0)
 
+end
+
+-- Assert that `list` does not contain `item`.
+--
+function assertNotContains(list, item)
+    for key, value in pairs(list) do
+        if value == item then
+            lu.assertNotEquals(value, item)
+        end
+    end
+
+    lu.assertTrue(true)
+end
+
+-- Assert there are no duplicates in the `list`.
+--
+function assertAllDifferent(list)
+    for i = 1, #list do
+        for j = i+1, #list do
+            if list[i] == list[j] then
+                lu.assertNotEquals(list[i], list[j])
+            end
+        end
+    end
+
+    lu.assertTrue(true)
+end
 -------------------------------------------------------
 
 return lu.LuaUnit.run()
